@@ -47,3 +47,15 @@ async def test_error_status_raises():
     client = make_client(lambda request: httpx.Response(200, json={"token": "t"}) if "login" in request.url.path else httpx.Response(500, text="boom"))
     with pytest.raises(LncrawlError, match="500"):
         await client.request("GET", "/api/novels")
+
+
+async def test_save_artifact_ignores_path_in_file_name(tmp_path):
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, content=b"epub-bytes")
+
+    client = make_client(handler)
+    artifact = {"file_name": "../../escape.epub", "output_file": "novels/n/artifacts/a.epub"}
+    saved = await client.save_artifact(artifact, tmp_path / "dl")
+    assert saved == tmp_path / "dl" / "escape.epub"
+    assert saved.read_bytes() == b"epub-bytes"
+    assert not (tmp_path / "escape.epub").exists()

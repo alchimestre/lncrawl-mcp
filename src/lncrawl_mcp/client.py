@@ -73,14 +73,16 @@ class LncrawlClient:
 
     async def save_artifact(self, artifact: dict[str, Any], directory: Path) -> Path:
         directory.mkdir(parents=True, exist_ok=True)
-        target = directory / artifact["file_name"]
+        target = directory / Path(artifact["file_name"]).name
         url = f"/static/{artifact['output_file']}"
         async with self._http.stream("GET", url, params={"token": self._token}) as response:
             if response.is_error:
                 raise LncrawlError(f"GET {url} -> {response.status_code}")
-            with target.open("wb") as file:
+            partial = target.with_name(target.name + ".part")
+            with partial.open("wb") as file:
                 async for chunk in response.aiter_bytes():
                     file.write(chunk)
+        partial.replace(target)
         return target
 
 

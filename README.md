@@ -4,7 +4,7 @@ Let an AI assistant search web-novel sites, download chapters, read them, and ex
 
 > "Find *Solo Leveling* on a French source, download the first 10 chapters, read me chapter 1, then build an EPUB."
 
-Status: early (0.1). Python 3.10+, tested against lncrawl 4.14.0. Not affiliated with lncrawl.
+Status: early (0.1), MIT licensed. Python 3.10+, tested against lncrawl 4.14.0. Not affiliated with lncrawl.
 
 ## Quick start
 
